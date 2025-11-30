@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RotateCcw, Zap, Radio } from 'lucide-react';
+import { RotateCcw, Sparkles, Heart } from 'lucide-react';
 
 export default function TicTacToe() {
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -8,17 +8,24 @@ export default function TicTacToe() {
   const [winningLine, setWinningLine] = useState([]);
   const [scores, setScores] = useState({ X: 0, O: 0, draws: 0 });
   const [animate, setAnimate] = useState(false);
-  const [glitchEffect, setGlitchEffect] = useState(false);
+  const [particles, setParticles] = useState([]);
 
   useEffect(() => {
     const result = calculateWinner(board);
     if (result) {
       setWinner(result.winner);
       setWinningLine(result.line);
-      setGlitchEffect(true);
-      setTimeout(() => setGlitchEffect(false), 500);
       if (result.winner !== 'Draw') {
         setScores(prev => ({ ...prev, [result.winner]: prev[result.winner] + 1 }));
+        // Create celebration particles
+        const newParticles = Array.from({ length: 30 }, (_, i) => ({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          delay: Math.random() * 0.5
+        }));
+        setParticles(newParticles);
+        setTimeout(() => setParticles([]), 2000);
       } else {
         setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
       }
@@ -72,135 +79,198 @@ export default function TicTacToe() {
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center p-4">
-      {/* Animated Starfield Background */}
-      <div className="absolute inset-0 opacity-60">
-        <div className="stars"></div>
-        <div className="stars2"></div>
-        <div className="stars3"></div>
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4"
+         style={{
+           background: 'linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 25%, #e6e6fa 50%, #b0c4de 75%, #add8e6 100%)'
+         }}>
+      
+      {/* Animated Cherry Blossoms */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="cherry-blossom"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${8 + Math.random() * 4}s`
+            }}
+          >
+            🌸
+          </div>
+        ))}
       </div>
 
-      {/* Upside Down Portal Effect */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="portal-effect"></div>
-      </div>
+      {/* Celebration Particles */}
+      {particles.map(particle => (
+        <div
+          key={particle.id}
+          className="celebration-particle"
+          style={{
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            animationDelay: `${particle.delay}s`
+          }}
+        >
+          ✨
+        </div>
+      ))}
 
-      {/* Scanlines Effect */}
-      <div className="absolute inset-0 scanlines pointer-events-none"></div>
+      {/* Floating Clouds */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="cloud" style={{ top: '10%', animationDuration: '25s' }}>☁️</div>
+        <div className="cloud" style={{ top: '30%', animationDuration: '30s', animationDelay: '5s' }}>☁️</div>
+        <div className="cloud" style={{ top: '60%', animationDuration: '35s', animationDelay: '10s' }}>☁️</div>
+      </div>
 
       <div className="w-full max-w-md relative z-10">
-        {/* Header with Stranger Things Aesthetic */}
-        <div className="text-center mb-8 relative">
-          <div className={`${glitchEffect ? 'glitch' : ''}`}>
-            <h1 className="text-6xl font-bold mb-2 drop-shadow-lg tracking-wider"
+        {/* Header with Anime Style */}
+        <div className="text-center mb-8">
+          <div className="relative inline-block">
+            <h1 className="text-7xl font-black mb-2"
                 style={{
-                  color: '#ff0000',
-                  textShadow: '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #8b0000',
-                  fontFamily: '"Courier New", monospace',
-                  letterSpacing: '0.1em'
+                  color: '#ff1493',
+                  textShadow: '4px 4px 0px #fff, 8px 8px 0px #ffb6c1, -2px -2px 0px #fff',
+                  fontFamily: '"Comic Sans MS", cursive, sans-serif',
+                  letterSpacing: '0.05em',
+                  transform: 'rotate(-2deg)'
                 }}>
-              TIC TAC TOE
+              まるばつ
             </h1>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-red-500 animate-pulse">
-            <Radio className="w-5 h-5" />
-            <p className="text-lg tracking-widest" style={{ fontFamily: 'monospace' }}>
-              ENTER THE UPSIDE DOWN
-            </p>
+            <div className="absolute -top-4 -right-8 text-4xl animate-bounce">⭐</div>
+            <div className="absolute -bottom-2 -left-8 text-3xl animate-bounce" style={{ animationDelay: '0.3s' }}>💫</div>
           </div>
           
-          {/* Flickering lights effect */}
-          <div className="flex justify-center gap-2 mt-4">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="w-3 h-3 rounded-full animate-flicker"
-                style={{
-                  backgroundColor: '#ff0000',
-                  boxShadow: '0 0 10px #ff0000',
-                  animationDelay: `${i * 0.2}s`
-                }}
-              ></div>
-            ))}
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <Heart className="w-6 h-6 text-pink-500 animate-pulse" fill="currentColor" />
+            <p className="text-2xl font-bold"
+               style={{
+                 background: 'linear-gradient(45deg, #ff1493, #ff69b4, #ffc0cb)',
+                 WebkitBackgroundClip: 'text',
+                 WebkitTextFillColor: 'transparent',
+                 fontFamily: '"Comic Sans MS", cursive'
+               }}>
+              Kawaii Battle Arena ♡
+            </p>
+            <Heart className="w-6 h-6 text-pink-500 animate-pulse" fill="currentColor" />
+          </div>
+
+          {/* Cute Decorations */}
+          <div className="flex justify-center gap-3 mt-4">
+            <span className="text-3xl animate-wiggle">🎀</span>
+            <span className="text-3xl animate-wiggle" style={{ animationDelay: '0.2s' }}>🌟</span>
+            <span className="text-3xl animate-wiggle" style={{ animationDelay: '0.4s' }}>🎀</span>
           </div>
         </div>
 
-        {/* Score Board with Retro Monitor Style */}
-        <div className="relative mb-6 border-4 border-red-900 rounded-lg overflow-hidden"
+        {/* Score Board */}
+        <div className="relative mb-6 rounded-3xl overflow-hidden backdrop-blur-sm"
              style={{
-               backgroundColor: 'rgba(0, 0, 0, 0.85)',
-               boxShadow: '0 0 20px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(255, 0, 0, 0.1)'
+               background: 'rgba(255, 255, 255, 0.95)',
+               border: '4px solid #ff69b4',
+               boxShadow: '0 8px 32px rgba(255, 20, 147, 0.3), inset 0 0 20px rgba(255, 182, 193, 0.2)'
              }}>
-          <div className="absolute inset-0 opacity-10 bg-gradient-to-b from-red-500 to-transparent pointer-events-none"></div>
           
+          <div className="absolute inset-0 opacity-20">
+            <div className="anime-pattern"></div>
+          </div>
+
           <div className="p-6 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-red-500 animate-pulse" />
-              <h2 className="text-xl font-bold text-red-500 tracking-widest" style={{ fontFamily: 'monospace' }}>
-                DIMENSION TRACKER
+              <Sparkles className="w-6 h-6 text-pink-500 animate-spin" style={{ animationDuration: '3s' }} />
+              <h2 className="text-2xl font-black"
+                  style={{
+                    color: '#ff1493',
+                    textShadow: '2px 2px 0px #fff',
+                    fontFamily: '"Comic Sans MS", cursive'
+                  }}>
+                ♡ SCORE ♡
               </h2>
+              <Sparkles className="w-6 h-6 text-pink-500 animate-spin" style={{ animationDuration: '3s' }} />
             </div>
+            
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 rounded border-2 border-cyan-500 bg-black/50"
-                   style={{ boxShadow: '0 0 10px rgba(0, 255, 255, 0.3)' }}>
-                <div className="text-3xl font-bold text-cyan-400" style={{ textShadow: '0 0 10px #00ffff' }}>X</div>
-                <div className="text-3xl font-bold text-cyan-300 font-mono">{scores.X}</div>
+              <div className="text-center p-4 rounded-2xl relative overflow-hidden transform hover:scale-105 transition-transform cursor-pointer"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%)',
+                     border: '3px solid #ff69b4',
+                     boxShadow: '0 4px 15px rgba(255, 105, 180, 0.4)'
+                   }}>
+                <div className="text-5xl font-black mb-1" style={{ color: '#ff1493', textShadow: '2px 2px 0px #fff' }}>X</div>
+                <div className="text-4xl font-black" style={{ color: '#c71585' }}>{scores.X}</div>
+                <div className="text-xl mt-1">🌸</div>
               </div>
-              <div className="text-center p-3 rounded border-2 border-gray-600 bg-black/50">
-                <div className="text-xs font-medium text-gray-400 mb-1 tracking-widest">RIFTS</div>
-                <div className="text-3xl font-bold text-gray-300 font-mono">{scores.draws}</div>
+
+              <div className="text-center p-4 rounded-2xl relative overflow-hidden"
+                   style={{
+                     background: 'linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 100%)',
+                     border: '3px solid #9370db'
+                   }}>
+                <div className="text-sm font-bold text-purple-600 mb-1">DRAWS</div>
+                <div className="text-4xl font-black text-purple-700">{scores.draws}</div>
+                <div className="text-xl mt-1">💫</div>
               </div>
-              <div className="text-center p-3 rounded border-2 border-red-500 bg-black/50"
-                   style={{ boxShadow: '0 0 10px rgba(255, 0, 0, 0.3)' }}>
-                <div className="text-3xl font-bold text-red-400" style={{ textShadow: '0 0 10px #ff0000' }}>O</div>
-                <div className="text-3xl font-bold text-red-300 font-mono">{scores.O}</div>
+
+              <div className="text-center p-4 rounded-2xl relative overflow-hidden transform hover:scale-105 transition-transform cursor-pointer"
+                   style={{
+                     background: 'linear-gradient(135deg, #add8e6 0%, #b0e0e6 100%)',
+                     border: '3px solid #4682b4',
+                     boxShadow: '0 4px 15px rgba(70, 130, 180, 0.4)'
+                   }}>
+                <div className="text-5xl font-black mb-1" style={{ color: '#1e90ff', textShadow: '2px 2px 0px #fff' }}>O</div>
+                <div className="text-4xl font-black" style={{ color: '#0066cc' }}>{scores.O}</div>
+                <div className="text-xl mt-1">🌊</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Game Board with Interstellar Portal Design */}
-        <div className="relative mb-6 border-4 border-red-900 rounded-lg overflow-hidden"
+        {/* Game Board */}
+        <div className="relative mb-6 rounded-3xl overflow-hidden backdrop-blur-sm"
              style={{
-               backgroundColor: 'rgba(0, 0, 0, 0.85)',
-               boxShadow: '0 0 30px rgba(255, 0, 0, 0.5), inset 0 0 30px rgba(255, 0, 0, 0.1)'
+               background: 'rgba(255, 255, 255, 0.95)',
+               border: '4px solid #ff69b4',
+               boxShadow: '0 8px 32px rgba(255, 20, 147, 0.3), inset 0 0 20px rgba(255, 182, 193, 0.2)'
              }}>
-          
-          {/* Circular Portal Design Background */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <div className="w-64 h-64 rounded-full border-4 border-red-500 animate-spin-slow"></div>
-            <div className="absolute w-48 h-48 rounded-full border-4 border-cyan-500 animate-spin-reverse"></div>
-            <div className="absolute w-32 h-32 rounded-full border-4 border-red-500 animate-spin-slow"></div>
-          </div>
+
+          {/* Decorative corners */}
+          <div className="absolute top-2 left-2 text-3xl z-20">🌸</div>
+          <div className="absolute top-2 right-2 text-3xl z-20">🌸</div>
+          <div className="absolute bottom-2 left-2 text-3xl z-20">🌸</div>
+          <div className="absolute bottom-2 right-2 text-3xl z-20">🌸</div>
 
           <div className="p-6 relative z-10">
             {/* Status */}
             <div className="text-center mb-6">
               {winner ? (
-                <div className={`text-2xl font-bold ${glitchEffect ? 'glitch' : ''}`}>
+                <div className="text-3xl font-black animate-bounce">
                   {winner === 'Draw' ? (
-                    <span className="text-gray-300 tracking-widest" style={{ fontFamily: 'monospace', textShadow: '0 0 10px #666' }}>
-                      DIMENSIONAL COLLAPSE
+                    <span style={{ color: '#9370db', textShadow: '3px 3px 0px #fff', fontFamily: '"Comic Sans MS", cursive' }}>
+                      友情の絆！ Friendship! 🤝✨
                     </span>
                   ) : (
-                    <span className={winner === 'X' ? 'text-cyan-400' : 'text-red-400'}
-                          style={{
-                            fontFamily: 'monospace',
-                            textShadow: winner === 'X' ? '0 0 20px #00ffff' : '0 0 20px #ff0000',
-                            letterSpacing: '0.2em'
-                          }}>
-                      {winner === 'X' ? 'DIMENSION X CONQUERED' : 'DIMENSION O CONQUERED'}
-                    </span>
+                    <div>
+                      <span style={{
+                        color: winner === 'X' ? '#ff1493' : '#1e90ff',
+                        textShadow: '3px 3px 0px #fff',
+                        fontFamily: '"Comic Sans MS", cursive'
+                      }}>
+                        {winner === 'X' ? '🌸 SAKURA' : '🌊 MIZUUMI'} WINS! 
+                      </span>
+                      <div className="text-5xl mt-2">
+                        {winner === 'X' ? '🎀' : '⚡'}
+                      </div>
+                    </div>
                   )}
                 </div>
               ) : (
-                <div className="text-xl font-semibold tracking-widest" style={{ fontFamily: 'monospace' }}>
-                  <span className="text-gray-400">CURRENT DIMENSION: </span>
-                  <span className={isXNext ? 'text-cyan-400' : 'text-red-400'}
-                        style={{
-                          textShadow: isXNext ? '0 0 10px #00ffff' : '0 0 10px #ff0000'
-                        }}>
-                    {isXNext ? 'X' : 'O'}
+                <div className="text-2xl font-black" style={{ fontFamily: '"Comic Sans MS", cursive' }}>
+                  <span style={{ color: '#9370db', textShadow: '2px 2px 0px #fff' }}>Turn:</span>{' '}
+                  <span style={{
+                    color: isXNext ? '#ff1493' : '#1e90ff',
+                    textShadow: '2px 2px 0px #fff'
+                  }}>
+                    {isXNext ? '🌸 SAKURA' : '🌊 MIZUUMI'}
                   </span>
                 </div>
               )}
@@ -213,47 +283,57 @@ export default function TicTacToe() {
                   key={index}
                   onClick={() => handleClick(index)}
                   className={`
-                    aspect-square rounded-lg text-6xl font-bold
-                    transition-all duration-200 transform
-                    ${cell ? 'scale-100' : 'scale-95 hover:scale-100'}
+                    aspect-square rounded-2xl text-7xl font-black
+                    transition-all duration-300 transform
+                    ${cell ? 'scale-100' : 'scale-95 hover:scale-105 hover:rotate-3'}
                     ${!cell && !winner ? 'cursor-pointer' : 'cursor-default'}
                     ${!cell && !winner ? 'active:scale-90' : ''}
                     relative overflow-hidden
                   `}
                   style={{
-                    backgroundColor: winningLine.includes(index) 
-                      ? 'rgba(255, 0, 0, 0.3)' 
-                      : 'rgba(0, 0, 0, 0.6)',
-                    border: winningLine.includes(index)
-                      ? '3px solid #ff0000'
-                      : cell 
-                        ? `3px solid ${cell === 'X' ? '#00ffff' : '#ff0000'}`
-                        : '3px solid #333',
-                    boxShadow: winningLine.includes(index)
-                      ? '0 0 20px rgba(255, 0, 0, 0.8), inset 0 0 20px rgba(255, 0, 0, 0.3)'
+                    background: winningLine.includes(index)
+                      ? 'linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)'
                       : cell
-                        ? `0 0 15px ${cell === 'X' ? 'rgba(0, 255, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)'}`
-                        : 'none'
+                        ? cell === 'X'
+                          ? 'linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%)'
+                          : 'linear-gradient(135deg, #add8e6 0%, #b0e0e6 100%)'
+                        : 'linear-gradient(135deg, #fff 0%, #f0f0f0 100%)',
+                    border: winningLine.includes(index)
+                      ? '4px solid #ffd700'
+                      : cell
+                        ? `4px solid ${cell === 'X' ? '#ff69b4' : '#4682b4'}`
+                        : '4px solid #ddd',
+                    boxShadow: winningLine.includes(index)
+                      ? '0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 215, 0, 0.3)'
+                      : cell
+                        ? `0 8px 25px ${cell === 'X' ? 'rgba(255, 105, 180, 0.5)' : 'rgba(70, 130, 180, 0.5)'}`
+                        : '0 4px 15px rgba(0, 0, 0, 0.1)'
                   }}
                   disabled={!!cell || !!winner}
                 >
-                  {/* Hover effect for empty cells */}
+                  {/* Sparkle effect on hover */}
                   {!cell && !winner && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-cyan-500/20 opacity-0 hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-4xl">
+                      ✨
+                    </div>
                   )}
                   
                   {cell && (
-                    <span className="animate-[scaleIn_0.3s_ease-out] relative z-10"
-                          style={{
-                            color: cell === 'X' ? '#00ffff' : '#ff0000',
-                            textShadow: cell === 'X' 
-                              ? '0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff'
-                              : '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000',
-                            fontFamily: '"Courier New", monospace',
-                            fontWeight: 'bold'
-                          }}>
-                      {cell}
-                    </span>
+                    <div className="animate-[bounceIn_0.5s_ease-out] relative z-10">
+                      <span style={{
+                        color: cell === 'X' ? '#ff1493' : '#1e90ff',
+                        textShadow: cell === 'X'
+                          ? '4px 4px 0px #fff, -2px -2px 0px #ff69b4'
+                          : '4px 4px 0px #fff, -2px -2px 0px #87ceeb',
+                        fontWeight: '900',
+                        fontFamily: '"Comic Sans MS", cursive'
+                      }}>
+                        {cell}
+                      </span>
+                      <div className="absolute inset-0 flex items-center justify-center text-3xl opacity-30">
+                        {cell === 'X' ? '🌸' : '🌊'}
+                      </div>
+                    </div>
                   )}
                 </button>
               ))}
@@ -261,171 +341,136 @@ export default function TicTacToe() {
           </div>
         </div>
 
-        {/* Action Buttons with Retro Style */}
+        {/* Action Buttons */}
         <div className="flex gap-3">
           <button
             onClick={resetGame}
-            className="flex-1 font-bold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border-2"
+            className="flex-1 font-black py-5 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:-rotate-2 active:scale-95 flex items-center justify-center gap-2 relative overflow-hidden"
             style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              color: '#00ffff',
-              borderColor: '#00ffff',
-              boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)',
-              fontFamily: 'monospace',
-              letterSpacing: '0.1em',
-              textShadow: '0 0 5px #00ffff'
+              background: 'linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%)',
+              border: '4px solid #ff1493',
+              color: '#fff',
+              boxShadow: '0 8px 25px rgba(255, 20, 147, 0.4)',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+              fontFamily: '"Comic Sans MS", cursive',
+              fontSize: '1.1rem'
             }}
           >
-            <RotateCcw className="w-5 h-5" />
-            NEW DIMENSION
+            <RotateCcw className="w-6 h-6" />
+            NEW GAME ♡
           </button>
+          
           <button
             onClick={resetScores}
-            className="flex-1 font-bold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 border-2"
+            className="flex-1 font-black py-5 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:rotate-2 active:scale-95 relative overflow-hidden"
             style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              color: '#ff0000',
-              borderColor: '#ff0000',
-              boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)',
-              fontFamily: 'monospace',
-              letterSpacing: '0.1em',
-              textShadow: '0 0 5px #ff0000'
+              background: 'linear-gradient(135deg, #add8e6 0%, #4682b4 100%)',
+              border: '4px solid #1e90ff',
+              color: '#fff',
+              boxShadow: '0 8px 25px rgba(30, 144, 255, 0.4)',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+              fontFamily: '"Comic Sans MS", cursive',
+              fontSize: '1.1rem'
             }}
           >
-            RESET PORTAL
+            RESET ALL ⭐
           </button>
+        </div>
+
+        {/* Cute footer message */}
+        <div className="text-center mt-6">
+          <p className="text-xl font-bold" style={{
+            color: '#ff69b4',
+            textShadow: '2px 2px 0px #fff',
+            fontFamily: '"Comic Sans MS", cursive'
+          }}>
+            頑張って！ (Ganbare!) 💖
+          </p>
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes scaleIn {
-          from {
-            transform: scale(0) rotate(180deg);
+        @keyframes bounceIn {
+          0% {
+            transform: scale(0) rotate(-180deg);
             opacity: 0;
           }
-          to {
+          50% {
+            transform: scale(1.2) rotate(10deg);
+          }
+          100% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
           }
         }
 
-        @keyframes flicker {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(-10deg); }
+          50% { transform: rotate(10deg); }
         }
 
-        .animate-flicker {
-          animation: flicker 2s infinite;
+        .animate-wiggle {
+          animation: wiggle 2s ease-in-out infinite;
         }
 
-        .stars {
-          width: 1px;
-          height: 1px;
-          background: transparent;
-          box-shadow: 780px 1207px #FFF, 1158px 1532px #FFF, 1344px 757px #FFF, 1189px 1217px #FFF;
-          animation: animStar 50s linear infinite;
-        }
-
-        .stars:after {
-          content: " ";
+        .cherry-blossom {
           position: absolute;
-          top: 2000px;
-          width: 1px;
-          height: 1px;
-          background: transparent;
-          box-shadow: 780px 1207px #FFF, 1158px 1532px #FFF, 1344px 757px #FFF, 1189px 1217px #FFF;
+          font-size: 2rem;
+          animation: fall linear infinite;
+          opacity: 0.8;
         }
 
-        .stars2 {
-          width: 2px;
-          height: 2px;
-          background: transparent;
-          box-shadow: 950px 623px #FFF, 1456px 876px #FFF, 234px 1789px #FFF, 1673px 234px #FFF;
-          animation: animStar 100s linear infinite;
+        @keyframes fall {
+          0% {
+            transform: translateY(-10vh) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0;
+          }
         }
 
-        .stars2:after {
-          content: " ";
+        .cloud {
           position: absolute;
-          top: 2000px;
-          width: 2px;
-          height: 2px;
-          background: transparent;
-          box-shadow: 950px 623px #FFF, 1456px 876px #FFF, 234px 1789px #FFF, 1673px 234px #FFF;
+          font-size: 4rem;
+          animation: float-cloud linear infinite;
         }
 
-        .stars3 {
-          width: 3px;
-          height: 3px;
-          background: transparent;
-          box-shadow: 345px 1456px #FFF, 1567px 345px #FFF, 789px 1234px #FFF, 234px 567px #FFF;
-          animation: animStar 150s linear infinite;
+        @keyframes float-cloud {
+          0% {
+            transform: translateX(-10vw);
+          }
+          100% {
+            transform: translateX(110vw);
+          }
         }
 
-        .stars3:after {
-          content: " ";
-          position: absolute;
-          top: 2000px;
-          width: 3px;
-          height: 3px;
-          background: transparent;
-          box-shadow: 345px 1456px #FFF, 1567px 345px #FFF, 789px 1234px #FFF, 234px 567px #FFF;
+        .celebration-particle {
+          position: fixed;
+          font-size: 2rem;
+          pointer-events: none;
+          animation: celebrate 2s ease-out forwards;
+          z-index: 1000;
         }
 
-        @keyframes animStar {
-          from { transform: translateY(0px); }
-          to { transform: translateY(-2000px); }
+        @keyframes celebrate {
+          0% {
+            transform: translateY(0) scale(0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-200px) scale(1.5) rotate(720deg);
+            opacity: 0;
+          }
         }
 
-        .portal-effect {
-          background: radial-gradient(circle at center, 
-            rgba(255, 0, 0, 0.2) 0%, 
-            rgba(139, 0, 0, 0.1) 25%, 
-            transparent 50%);
+        .anime-pattern {
           width: 100%;
           height: 100%;
-          animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.5; }
-          50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .scanlines {
-          background: repeating-linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.15),
-            rgba(0, 0, 0, 0.15) 1px,
-            transparent 1px,
-            transparent 2px
-          );
-        }
-
-        .glitch {
-          animation: glitch 0.3s infinite;
-        }
-
-        @keyframes glitch {
-          0% { transform: translate(0); }
-          20% { transform: translate(-2px, 2px); }
-          40% { transform: translate(-2px, -2px); }
-          60% { transform: translate(2px, 2px); }
-          80% { transform: translate(2px, -2px); }
-          100% { transform: translate(0); }
-        }
-
-        .animate-spin-slow {
-          animation: spin 20s linear infinite;
-        }
-
-        .animate-spin-reverse {
-          animation: spin 15s linear infinite reverse;
-        }
-
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          background-image: 
+            repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 182, 193, 0.3) 10px, rgba(255, 182, 193, 0.3) 20px),
+            repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(173, 216, 230, 0.3) 10px, rgba(173, 216, 230, 0.3) 20px);
         }
       `}</style>
     </div>
